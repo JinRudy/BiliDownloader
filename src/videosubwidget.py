@@ -12,13 +12,15 @@ class VideoSubWidget(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.ui.label_version.setText("视频剪辑")
         self.connect(
-            self.ui.button_changelog,
+            self.ui.button_videosub_submit,
             QtCore.SIGNAL("clicked()"),
-            self.on_button_changelog_clicked
+            self.on_button_videosub_submit_clicked
         )
 
-    def on_button_changelog_clicked(self):
+    def on_button_videosub_submit_clicked(self):
         show_changelog(self)
+        print(self.ui.time_startsub.text())
+        print(self.ui.time_endsub.text())
 
     def update_tab_changes(self, old, now):
         pass

@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>483</height>
+    <width>539</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
   </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
@@ -48,7 +51,7 @@
     <rect>
      <x>30</x>
      <y>50</y>
-     <width>141</width>
+     <width>174</width>
      <height>41</height>
     </rect>
    </property>
@@ -61,13 +64,83 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="button_changelog">
+     <widget class="QPushButton" name="button_videosub_submit">
       <property name="text">
-       <string>PushButton</string>
+       <string>开始截取</string>
       </property>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>170</y>
+     <width>471</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>截取时间</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTimeEdit" name="time_startsub">
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhPreferNumbers|Qt::ImhTime</set>
+      </property>
+      <property name="currentSection">
+       <enum>QDateTimeEdit::SecondSection</enum>
+      </property>
+      <property name="displayFormat">
+       <string>HH:mm:ss</string>
+      </property>
+      <property name="calendarPopup">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTimeEdit" name="time_endsub">
+      <property name="contextMenuPolicy">
+       <enum>Qt::NoContextMenu</enum>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhPreferNumbers|Qt::ImhTime</set>
+      </property>
+      <property name="currentSection">
+       <enum>QDateTimeEdit::HourSection</enum>
+      </property>
+      <property name="displayFormat">
+       <string>HH:mm:ss</string>
+      </property>
+      <property name="calendarPopup">
+       <bool>true</bool>
+      </property>
+      <property name="time">
+       <time>
+        <hour>0</hour>
+        <minute>0</minute>
+        <second>0</second>
+       </time>
+      </property>
+     </widget>
+    </item>
+   </layout>
+   <zorder>time_startsub</zorder>
+   <zorder>time_endsub</zorder>
+   <zorder>label_2</zorder>
   </widget>
  </widget>
  <resources/>

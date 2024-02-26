@@ -7,5 +7,8 @@
     "saveDanmaku": false,
     "video_codec": 7
   },
-  "version": "1.1.0"
+  "db": {
+    "SQLITE_URL":"sqlite+pysqlcipher://:123456@/mydb.db3"
+  },
+  "version": "1.0.0"
 }
