@@ -1,0 +1,11 @@
+{
+  "isnew": false,
+  "userinfo": {
+    "downloadPath": "D:/workSpace/GitSpace/GitHub/BiliDownloader/src/Download",
+    "max_thread_count": 4,
+    "reserveAudio": false,
+    "saveDanmaku": false,
+    "video_codec": 7
+  },
+  "version": "1.1.0"
+}

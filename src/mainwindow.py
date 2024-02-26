@@ -24,13 +24,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.tabWidget.setTabText(0, "输入")
         self.ui.tabWidget.setTabText(1, "下载")
-        self.ui.tabWidget.setTabText(2, "设置")
-        self.ui.tabWidget.setTabText(3, "关于")
+        self.ui.tabWidget.setTabText(2, "剪辑")
+        self.ui.tabWidget.setTabText(3, "设置")
+        self.ui.tabWidget.setTabText(4, "关于")
 
         self.tabs = []
         self.tab_now = 0
         self.tabs.append(self.ui.widget_input)
         self.tabs.append(self.ui.widget_download)
+        self.tabs.append(self.ui.widget_videosub)
         self.tabs.append(self.ui.widget_settings)
         self.tabs.append(self.ui.widget_about)
 

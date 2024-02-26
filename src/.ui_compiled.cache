@@ -1,0 +1,17 @@
+res_rc.py
+ui_aboutwidget.py
+ui_centralcheckbox.py
+ui_configwidget.py
+ui_confirmwidget.py
+ui_dialogchangelog.py
+ui_dialogdownloadupdate.py
+ui_dialoglogin.py
+ui_dialogupdateinfo.py
+ui_downloaditem.py
+ui_downloadwidget.py
+ui_inputsetupwidget.py
+ui_inputwidget.py
+ui_mainwindow.py
+ui_selectionwidget.py
+ui_settingswidget.py
+ui_videosubwidget.py
