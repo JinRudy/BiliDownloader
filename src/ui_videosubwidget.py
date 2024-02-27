@@ -77,7 +77,9 @@ class Ui_VideoSubwidget(object):
         self.time_endsub.setObjectName(u"time_endsub")
         self.time_endsub.setContextMenuPolicy(Qt.NoContextMenu)
         self.time_endsub.setInputMethodHints(Qt.ImhPreferNumbers|Qt.ImhTime)
-        self.time_endsub.setCurrentSection(QDateTimeEdit.MinuteSection)
+        self.time_endsub.setCurrentSection(QDateTimeEdit.HourSection)
+        self.time_endsub.setCalendarPopup(True)
+        self.time_endsub.setTime(QTime(0, 0, 0))
 
         self.horizontalLayout.addWidget(self.time_endsub)
 

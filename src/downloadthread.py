@@ -16,8 +16,10 @@ _DEFAULT_HEADERS = {
 }
 
 
-def download_danmaku(path, cid):
+def download_danmaku(path, xmlPath, cid):
     danmakuXml = danmaku.get_danmaku_xml(cid)
+    with open(xmlPath, "w", encoding="utf_8") as f:
+        f.write(danmakuXml)
     danmakuAss = convertMain(danmakuXml, 852, 480, text_opacity=0.6)
     with open(path, "w", encoding="utf_8") as f:
         f.write(danmakuAss)
@@ -237,15 +239,20 @@ class DownloadTask(QtCore.QThread):
         # Download and parse Xml Danmaku
         if self.task["saveDanmaku"]:
             danmaku_file_name = "{}.ass".format(self.task["name"])
+            danmakuxml_file_name = "{}.xml".format(self.task["name"])
             try:
                 self.emit(QtCore.SIGNAL("update_status(QString)"), "正在下载弹幕")
                 download_danmaku(
-                    root_dir.absoluteFilePath(danmaku_file_name), self.task["cid"]
+                    root_dir.absoluteFilePath(danmaku_file_name),
+                    root_dir.absoluteFilePath(danmakuxml_file_name),
+                    self.task["cid"]
                 )
             except Exception as e:
                 self.emit(QtCore.SIGNAL("update_status(QString)"), "弹幕下载失败，已跳过")
                 if root_dir.exists(danmaku_file_name):
                     root_dir.remove(danmaku_file_name)
+                if root_dir.exists(danmakuxml_file_name):
+                    root_dir.remove(danmakuxml_file_name)
                 time.sleep(1)
 
         # Cleanup

@@ -47,25 +47,31 @@ class SQLiteDatabase:
         self.cursor.close()
         self.connection.close()
 
-# Example usage:
-# Initialize database object
-db = SQLiteDatabase('example.db')
+if __name__ == '__main__':
+    # Example usage:
+    # Initialize database object
+    db = SQLiteDatabase('example.db')
 
-# Create table
-db.create_table('users', [('id', 'INTEGER PRIMARY KEY'), ('name', 'TEXT'), ('age', 'INTEGER')])
+    # # Create table
+    # db.create_table('users', [('id', 'INTEGER PRIMARY KEY'), ('name', 'TEXT'), ('age', 'INTEGER')])
+    #
+    # # Insert data
+    # db.insert_data('users', {'name': 'Alice', 'age': 30})
+    #
+    # # Update data
+    # db.update_data('users', {'age': 31}, 'name = "Alice"')
+    #
+    # # Select data
+    # result = db.select_data('users')
+    # print(result)
+    #
+    # # Delete data
+    # db.delete_data('users', 'name = "Alice"')
+    #
+    # # Close connection
+    # db.close()
 
-# Insert data
-db.insert_data('users', {'name': 'Alice', 'age': 30})
+    db.insert_data('video_down_info', {'path':'1', 'title':'1'})
+    print(db.select_data('video_down_info'))
 
-# Update data
-db.update_data('users', {'age': 31}, 'name = "Alice"')
-
-# Select data
-result = db.select_data('users')
-print(result)
-
-# Delete data
-db.delete_data('users', 'name = "Alice"')
-
-# Close connection
-db.close()
+    db.close()

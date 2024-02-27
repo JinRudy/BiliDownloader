@@ -1,4 +1,7 @@
 {
+  "db": {
+    "SQLITE_URL": "sqlite+pysqlcipher://:123456@/mydb.db3"
+  },
   "isnew": false,
   "userinfo": {
     "downloadPath": "D:/workSpace/GitSpace/GitHub/BiliDownloader/src/Download",
@@ -7,8 +10,5 @@
     "saveDanmaku": false,
     "video_codec": 7
   },
-  "db": {
-    "SQLITE_URL":"sqlite+pysqlcipher://:123456@/mydb.db3"
-  },
-  "version": "1.0.0"
+  "version": "1.1.0"
 }
