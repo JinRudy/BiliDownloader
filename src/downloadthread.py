@@ -15,7 +15,6 @@ _DEFAULT_HEADERS = {
     "User-Agent": "Mozilla/5.0",
 }
 
-
 def download_danmaku(path, xmlPath, cid):
     danmakuXml = danmaku.get_danmaku_xml(cid)
     with open(xmlPath, "w", encoding="utf_8") as f:
@@ -145,99 +144,102 @@ class DownloadTask(QtCore.QThread):
         self.emit(QtCore.SIGNAL("enable_restart()"))
 
         # Download video
-        req = Request(url=video_url, method="GET", headers=_DEFAULT_HEADERS)
-        video_temp_file_name = "{}_temp.mp4".format(self.task["name"])
-        video_temp_file_path = root_dir.absoluteFilePath(video_temp_file_name)
-        try_times = 0
-        while try_times < 3:
-            try:
-                self.emit(QtCore.SIGNAL("update_status(QString)"), "正在下载视频")
-                with open(video_temp_file_path, "wb") as f:
-                    with urlopen(req) as resp:
-                        while True:
-                            buffer = resp.read(4096)
-                            if self.fource_stop:
-                                return
-                            if not buffer:
-                                break
-                            f.write(buffer)
-                            self.video_finished_size += len(buffer)
-                break
-            except Exception as e:
-                try_times += 1
-                self.emit(
-                    QtCore.SIGNAL("update_status(QString)"),
-                    "下载视频失败，即将重试，次数{}".format(try_times),
-                )
-                time.sleep(2)
-        else:
-            self.emit(QtCore.SIGNAL("update_status(QString)"), "下载失败，请重新输入")
-            self.task["finished"] = True
-            return
+        if self.task["saveVideo"]:
+            req = Request(url=video_url, method="GET", headers=_DEFAULT_HEADERS)
+            video_temp_file_name = "{}_temp.mp4".format(self.task["name"])
+            video_temp_file_path = root_dir.absoluteFilePath(video_temp_file_name)
+            try_times = 0
+            while try_times < 3:
+                try:
+                    self.emit(QtCore.SIGNAL("update_status(QString)"), "正在下载视频")
+                    with open(video_temp_file_path, "wb") as f:
+                        with urlopen(req) as resp:
+                            while True:
+                                buffer = resp.read(4096)
+                                if self.fource_stop:
+                                    return
+                                if not buffer:
+                                    break
+                                f.write(buffer)
+                                self.video_finished_size += len(buffer)
+                    break
+                except Exception as e:
+                    try_times += 1
+                    self.emit(
+                        QtCore.SIGNAL("update_status(QString)"),
+                        "下载视频失败，即将重试，次数{}".format(try_times),
+                    )
+                    time.sleep(2)
+            else:
+                self.emit(QtCore.SIGNAL("update_status(QString)"), "下载失败，请重新输入")
+                self.task["finished"] = True
+                return
 
-        # Download audio
-        req = Request(url=audio_url, method="GET", headers=_DEFAULT_HEADERS)
-        audio_temp_file_name = "{}_temp.m4a".format(self.task["name"])
-        audio_temp_file_path = root_dir.absoluteFilePath(audio_temp_file_name)
-        try_times = 0
-        while try_times < 3:
-            try:
-                self.emit(QtCore.SIGNAL("update_status(QString)"), "正在下载音频")
-                with open(audio_temp_file_path, "wb") as f:
-                    with urlopen(req) as resp:
-                        while True:
-                            buffer = resp.read(4096)
-                            if self.fource_stop:
-                                return
-                            if not buffer:
-                                break
-                            f.write(buffer)
-                            self.audio_finished_size += len(buffer)
-                break
-            except Exception as e:
-                try_times += 1
-                self.emit(
-                    QtCore.SIGNAL("update_status(QString)"),
-                    "下载音频失败，即将重试，次数{}".format(try_times),
-                )
-                time.sleep(2)
-        else:
-            self.emit(QtCore.SIGNAL("update_status(QString)"), "下载失败，请重新输入")
-            self.task["finished"] = True
-            return
+            # Download audio
+            if self.task["onlyOne"] == 0:
+                req = Request(url=audio_url, method="GET", headers=_DEFAULT_HEADERS)
+                audio_temp_file_name = "{}_temp.m4a".format(self.task["name"])
+                audio_temp_file_path = root_dir.absoluteFilePath(audio_temp_file_name)
+                try_times = 0
+                while try_times < 3:
+                    try:
+                        self.emit(QtCore.SIGNAL("update_status(QString)"), "正在下载音频")
+                        with open(audio_temp_file_path, "wb") as f:
+                            with urlopen(req) as resp:
+                                while True:
+                                    buffer = resp.read(4096)
+                                    if self.fource_stop:
+                                        return
+                                    if not buffer:
+                                        break
+                                    f.write(buffer)
+                                    self.audio_finished_size += len(buffer)
+                        break
+                    except Exception as e:
+                        try_times += 1
+                        self.emit(
+                            QtCore.SIGNAL("update_status(QString)"),
+                            "下载音频失败，即将重试，次数{}".format(try_times),
+                        )
+                        time.sleep(2)
+                else:
+                    self.emit(QtCore.SIGNAL("update_status(QString)"), "下载失败，请重新输入")
+                    self.task["finished"] = True
+                    return
 
-        # End Download
-        while not self.timer_stopped:
-            time.sleep(0.1)
+                # End Download
+                while not self.timer_stopped:
+                    time.sleep(0.1)
 
-        # ffmpeg
-        self.emit(QtCore.SIGNAL("update_status(QString)"), "正在使用ffmpeg合并")
-        out_name = "{}.mp4".format(self.task["name"])
-        if root_dir.exists(out_name):
-            root_dir.remove(out_name)
-        ffmpeg_path = QtCore.QDir("ffmpeg").absoluteFilePath("ffmpeg.exe")
-        devnull = open(os.devnull, "w")
-        subprocess.call(
-            [
-                ffmpeg_path,
-                "-i",
-                video_temp_file_path,
-                "-i",
-                audio_temp_file_path,
-                "-c:v",
-                "copy",
-                "-c:a",
-                "copy",
-                root_dir.absoluteFilePath(out_name),
-            ],
-            stdout=devnull,
-            stderr=devnull,
-            creationflags=subprocess.CREATE_NO_WINDOW
-        )
-        devnull.close()
+            # ffmpeg
+            self.emit(QtCore.SIGNAL("update_status(QString)"), "正在使用ffmpeg合并")
+            out_name = "{}.mp4".format(self.task["name"])
+            if root_dir.exists(out_name):
+                root_dir.remove(out_name)
+            ffmpeg_path = QtCore.QDir("ffmpeg").absoluteFilePath("ffmpeg.exe")
+            devnull = open(os.devnull, "w")
+            subprocess.call(
+                [
+                    ffmpeg_path,
+                    "-i",
+                    video_temp_file_path,
+                    "-i",
+                    audio_temp_file_path,
+                    "-c:v",
+                    "copy",
+                    "-c:a",
+                    "copy",
+                    root_dir.absoluteFilePath(out_name),
+                ],
+                stdout=devnull,
+                stderr=devnull,
+                creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            devnull.close()
 
         # Download and parse Xml Danmaku
         if self.task["saveDanmaku"]:
+            print('下载弹幕')
             danmaku_file_name = "{}.ass".format(self.task["name"])
             danmakuxml_file_name = "{}.xml".format(self.task["name"])
             try:
@@ -255,14 +257,16 @@ class DownloadTask(QtCore.QThread):
                     root_dir.remove(danmakuxml_file_name)
                 time.sleep(1)
 
-        # Cleanup
-        self.emit(QtCore.SIGNAL("update_status(QString)"), "正在清理")
-        root_dir.remove(video_temp_file_path)
-        if self.task["reserveAudio"]:
-            root_dir.rename(audio_temp_file_name, "{}.m4a".format(self.task["name"]))
-        else:
-            root_dir.remove(audio_temp_file_path)
-        time.sleep(0.2)
+        if self.task["saveVideo"]:
+            # Cleanup
+            self.emit(QtCore.SIGNAL("update_status(QString)"), "正在清理")
+            root_dir.remove(video_temp_file_path)
+            if self.task["reserveAudio"]:
+                root_dir.rename(audio_temp_file_name, "{}.m4a".format(self.task["name"]))
+                # root_dir.rename(audio_temp_file_name, "{}.m4a".format(self.task["name"]))
+            else:
+                root_dir.remove(audio_temp_file_path)
+            time.sleep(0.2)
 
         self.emit(QtCore.SIGNAL("update_status(QString)"), "下载完成")
         self.emit(QtCore.SIGNAL("update_finished()"))

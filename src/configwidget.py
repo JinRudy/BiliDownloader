@@ -3,26 +3,37 @@ import traceback
 from os.path import isdir
 
 from PySide2 import QtWidgets, QtCore
-from PySide2.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox
+from PySide2.QtWidgets import QFileDialog, QTableWidgetItem, QMessageBox, QHeaderView
 
 import style
 from Lib.bili_api import video, exceptions
 from Lib.bili_api.utils.passport import BiliPassport
 from centralcheckbox import CentralCheckBox
+from checkBoxHeader import CheckBoxHeader
 from ui_configwidget import Ui_ConfigWidget
 from utils import configUtils
 from utils.removeSpecialChars import removeSpecialChars
 
 # codec
 video_codec_id = {
-    7: "H.264(AVC) 尺寸大，兼容性最佳",
-    12: "H.265(HEVC) 尺寸中等，兼容性一般",
-    13: "AV1 尺寸小，老机型兼容差",
+    7: "H.264(AVC):☆☆☆",
+    12: "H.265(HEVC):☆☆",
+    13: "AV1:☆",
+}
+
+video_get_id = {
+    0: "全部类型",
+    1: "读取视频",
+    2: "读取音频",
+    3: "读取弹幕",
 }
 
 video_codec_match = {}
 for i in video_codec_id:
     video_codec_match[video_codec_id[i]] = i
+video_get_match = {}
+for i in video_get_id:
+    video_get_match[video_get_id[i]] = i
 
 
 class ConfigWidget(QtWidgets.QWidget):
@@ -34,6 +45,12 @@ class ConfigWidget(QtWidgets.QWidget):
         for i in video_codec_match:
             codecs.append(i)
         self.ui.combo_codec.addItems(codecs)
+
+        getids = []
+        for i in video_get_match:
+            getids.append(i)
+        self.ui.combo_get_type.addItems(getids)
+
         self.connect(
             self.ui.button_path,
             QtCore.SIGNAL("clicked()"),
@@ -49,6 +66,11 @@ class ConfigWidget(QtWidgets.QWidget):
             QtCore.SIGNAL("textChanged(QString)"),
             self.on_path_changed,
         )
+        # 设置头部复选
+        self.header = CheckBoxHeader()
+        self.ui.table_downloads.setHorizontalHeader(self.header)
+        self.header.select_all_clicked.connect(self.header.change_state)
+        self.header.isOn = configUtils.UserDataHelper().get(configUtils.UserDataHelper().CONFIGS.SAVE_DANMAKU, False)
 
     # Slot
     def on_path_change_button_clicked(self):
@@ -67,9 +89,10 @@ class ConfigWidget(QtWidgets.QWidget):
         self.ui.button_submit.setDisabled(True)
         quality = self.quality_match[self.ui.combo_quality.currentText()]
         codec = video_codec_match[self.ui.combo_codec.currentText()]
+        getid = video_get_match[self.ui.combo_get_type.currentText()]
         userdata = configUtils.UserDataHelper()
         # reserveAudio = configUtils.getUserData(configUtils.Configs.RESERVE_AUDIO, False)
-        reserveAudio = userdata.get(userdata.CONFIGS.RESERVE_AUDIO, False)
+        reserveAudio = userdata.get(userdata.CONFIGS.RESERVE_AUDIO, False) or getid == 2
         for i in self.data["download_data"]:
             box_danmaku: CentralCheckBox = i["box_danmaku"]
             push = {
@@ -82,7 +105,9 @@ class ConfigWidget(QtWidgets.QWidget):
                 "isbvid": i["isbvid"],
                 "cid": i["cid"],
                 "reserveAudio": reserveAudio,
-                "saveDanmaku": box_danmaku.get_box().isChecked(),
+                "saveVideo": getid == 1 or getid == 0,
+                "saveDanmaku": box_danmaku.get_box().isChecked() and (getid == 3 or getid == 0),
+                "onlyOne": 1,
             }
             self.parent().download.push_task(push)
         self.parent().input_finished()
@@ -142,6 +167,7 @@ class ConfigWidget(QtWidgets.QWidget):
             self.ui.table_downloads.setRowCount(self.ui.table_downloads.rowCount() + 1)
             i["box_danmaku"] = CentralCheckBox()
             i["box_danmaku"].get_box().setChecked(download_danmaku)
+            self.header.append(i["box_danmaku"])
             self.ui.table_downloads.setCellWidget(
                 self.ui.table_downloads.rowCount() - 1, 0, i["box_danmaku"]
             )

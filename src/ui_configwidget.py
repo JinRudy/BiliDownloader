@@ -17,7 +17,7 @@ class Ui_ConfigWidget(object):
     def setupUi(self, ConfigWidget):
         if not ConfigWidget.objectName():
             ConfigWidget.setObjectName(u"ConfigWidget")
-        ConfigWidget.resize(459, 372)
+        ConfigWidget.resize(501, 520)
         font = QFont()
         font.setFamily(u"HarmonyOS Sans SC")
         font.setPointSize(11)
@@ -33,10 +33,10 @@ class Ui_ConfigWidget(object):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label = QLabel(self.widget)
-        self.label.setObjectName(u"label")
+        self.label_3 = QLabel(self.widget)
+        self.label_3.setObjectName(u"label_3")
 
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_3, 3, 0, 1, 1)
 
         self.combo_quality = QComboBox(self.widget)
         self.combo_quality.setObjectName(u"combo_quality")
@@ -60,10 +60,15 @@ class Ui_ConfigWidget(object):
 
         self.gridLayout.addWidget(self.combo_codec, 1, 1, 1, 1)
 
-        self.label_3 = QLabel(self.widget)
-        self.label_3.setObjectName(u"label_3")
+        self.label_4 = QLabel(self.widget)
+        self.label_4.setObjectName(u"label_4")
 
-        self.gridLayout.addWidget(self.label_3, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.label_4, 2, 0, 1, 1)
+
+        self.label = QLabel(self.widget)
+        self.label.setObjectName(u"label")
+
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -79,7 +84,12 @@ class Ui_ConfigWidget(object):
         self.horizontalLayout.addWidget(self.button_path)
 
 
-        self.gridLayout.addLayout(self.horizontalLayout, 2, 1, 1, 1)
+        self.gridLayout.addLayout(self.horizontalLayout, 3, 1, 1, 1)
+
+        self.combo_get_type = QComboBox(self.widget)
+        self.combo_get_type.setObjectName(u"combo_get_type")
+
+        self.gridLayout.addWidget(self.combo_get_type, 2, 1, 1, 1)
 
 
         self.verticalLayout.addLayout(self.gridLayout)
@@ -102,6 +112,10 @@ class Ui_ConfigWidget(object):
         self.table_downloads.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.table_downloads.setSelectionMode(QAbstractItemView.NoSelection)
         self.table_downloads.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.table_downloads.setRowCount(0)
+        self.table_downloads.setColumnCount(2)
+        self.table_downloads.horizontalHeader().setVisible(True)
+        self.table_downloads.horizontalHeader().setCascadingSectionResizes(False)
         self.table_downloads.horizontalHeader().setDefaultSectionSize(100)
         self.table_downloads.horizontalHeader().setStretchLastSection(True)
 
@@ -134,9 +148,10 @@ class Ui_ConfigWidget(object):
 
     def retranslateUi(self, ConfigWidget):
         ConfigWidget.setWindowTitle(QCoreApplication.translate("ConfigWidget", u"Form", None))
-        self.label.setText(QCoreApplication.translate("ConfigWidget", u"\u6700\u5927\u6e05\u6670\u5ea6", None))
-        self.label_2.setText(QCoreApplication.translate("ConfigWidget", u"\u4f18\u9009\u683c\u5f0f", None))
         self.label_3.setText(QCoreApplication.translate("ConfigWidget", u"\u4fdd\u5b58\u4f4d\u7f6e", None))
+        self.label_2.setText(QCoreApplication.translate("ConfigWidget", u"\u4f18\u9009\u683c\u5f0f", None))
+        self.label_4.setText(QCoreApplication.translate("ConfigWidget", u"\u6293\u53d6\u7c7b\u578b", None))
+        self.label.setText(QCoreApplication.translate("ConfigWidget", u"\u6700\u5927\u6e05\u6670\u5ea6", None))
         self.button_path.setText(QCoreApplication.translate("ConfigWidget", u"\u8bbe\u7f6e\u5f53\u524d\u4fdd\u5b58\u4f4d\u7f6e", None))
         ___qtablewidgetitem = self.table_downloads.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("ConfigWidget", u"\u4e0b\u8f7d\u5f39\u5e55", None));

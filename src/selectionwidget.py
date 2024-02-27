@@ -1,6 +1,9 @@
 import pickle
 
 from PySide2 import QtWidgets, QtCore
+
+from checkBoxHeader import CheckBoxHeader
+from utils import configUtils
 from ui_selectionwidget import Ui_SelectionWidget
 
 from centralcheckbox import CentralCheckBox
@@ -29,6 +32,11 @@ class SelectionWidget(QtWidgets.QWidget):
             QtCore.SIGNAL("clicked()"),
             self.on_help_button_clicked,
         )
+        # 设置头部复选
+        self.headers = CheckBoxHeader()
+        self.ui.table_selection.setHorizontalHeader(self.headers)
+        self.headers.select_all_clicked.connect(self.headers.change_state)
+        self.headers.isOn = True
 
     def data_update(self, back):
         if back:
@@ -40,6 +48,7 @@ class SelectionWidget(QtWidgets.QWidget):
             box = CentralCheckBox()
             box.get_box().setChecked(True)
             i["box"] = box
+            self.headers.append(box)
             item_text = QtWidgets.QTableWidgetItem(i["name"])
             self.ui.table_selection.setRowCount(self.ui.table_selection.rowCount() + 1)
             self.ui.table_selection.setCellWidget(
